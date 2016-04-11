@@ -29,6 +29,8 @@ public protocol CIDR: CollectionType, CustomStringConvertible, StringLiteralConv
     init?(string: String)
 }
 
+// MARK: - Common Implementations
+
 extension CIDR {
     public init?(string: String) {
         let cidrStringComps = string.componentsSeparatedByString("/")
@@ -57,6 +59,11 @@ extension CIDR where Self.Index == Int {
         let bitmask = (Element.Value.max >> freeOffset) << freeOffset
         return Element(value: bitmask)
     }
+}
+
+// MARK: - CollectionType protocol
+
+extension CIDR where Self.Index == Int {
 
     public var startIndex: Int {
         return 0
@@ -70,6 +77,8 @@ extension CIDR where Self.Index == Int {
         return self.startIPAddress + position
     }
 }
+
+// MARK: - String Literals
 
 extension CIDR {
     public var description: String {
@@ -89,7 +98,7 @@ extension CIDR {
     }
 }
 
-// MARK: Concrete Structures
+// MARK: - Concrete Structures
 
 public struct CIDRv4: CIDR {
     public let ipAddress: IPv4Address

@@ -17,6 +17,10 @@
 //  limitations under the License.
 //
 
+// MARK: - Protocols
+
+// MARK: Values
+
 public protocol IPAddressValueType: UnsignedIntegerType {
     static var max: Self { get }
 
@@ -37,6 +41,8 @@ public protocol IPAddressGroupType: UnsignedIntegerType {
 
     init?(_ string: String, radix: Int)
 }
+
+// MARK: Main
 
 public protocol IPAddress: Equatable, Comparable, CustomStringConvertible,
                            ArrayLiteralConvertible, StringLiteralConvertible {
@@ -62,6 +68,8 @@ public protocol IPAddress: Equatable, Comparable, CustomStringConvertible,
 
     func + (lhs: Self, rhs: Int) -> Self
 }
+
+// MARK: - Convenience Initializers
 
 extension IPAddress {
 
@@ -89,6 +97,8 @@ extension IPAddress {
     }
 }
 
+// MARK: - Bit Access
+
 extension IPAddress {
     public static func bitsIndices() -> AnyGenerator<Int> {
         var currentIndex: Int = Self.bitsSize - 1
@@ -108,6 +118,8 @@ extension IPAddress {
         }
     }
 }
+
+// MARK: - Group Access
 
 extension IPAddress {
     public static var groupsCount: Int {
@@ -134,12 +146,16 @@ extension IPAddress {
     }
 }
 
+// MARKK: - Array Literal
+
 extension IPAddress {
     typealias Element = Group
     public init(arrayLiteral elements: Group...) {
         self = Self(groups: elements) ?? Self(value: 0)
     }
 }
+
+// MARK: - String Literals
 
 extension IPAddress {
     public init(stringLiteral value: String) {
@@ -150,6 +166,12 @@ extension IPAddress {
     }
     public init(extendedGraphemeClusterLiteral value: String) {
         self.init(stringLiteral: value)
+    }
+}
+
+extension IPAddress {
+    public var description: String {
+        return self.groups.map { String($0, radix: Self.groupRadix) }.joinWithSeparator(Self.groupSeparator)
     }
 }
 
@@ -167,14 +189,6 @@ public func < <T: IPAddress>(lhs: T, rhs: T) -> Bool {
 
 public func + <T: IPAddress>(lhs: T, rhs: Int) -> T {
     return T(value: lhs.value + rhs)
-}
-
-// MARK: - Strings
-
-extension IPAddress {
-    public var description: String {
-        return self.groups.map { String($0, radix: Self.groupRadix) }.joinWithSeparator(Self.groupSeparator)
-    }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
