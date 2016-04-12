@@ -25,13 +25,13 @@ public protocol CIDR: CollectionType, CustomStringConvertible, StringLiteralConv
     var startIPAddress: Element { get }
     var netmask: Element { get }
 
-    init?(ipAddress: Element, prefix: Int)
+    init?(ipAddress: Element, prefix: Index)
     init?(string: String)
 }
 
 // MARK: - Common Implementations
 
-extension CIDR {
+extension CIDR where Self.Index == Int {
     public init?(string: String) {
         let cidrStringComps = string.componentsSeparatedByString("/")
         guard cidrStringComps.count == 2 else {
@@ -86,7 +86,7 @@ extension CIDR {
     }
 }
 
-extension CIDR {
+extension CIDR where Self.Index == Int {
     public init(stringLiteral value: String) {
         self = Self(string: value) ?? Self(ipAddress: Element(value: 0), prefix: 0)!
     }
